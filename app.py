@@ -143,18 +143,22 @@ with st.sidebar:
         
         st.markdown("---")
         st.markdown("### 🔄 Оновити дані")
-        if st.button("▶ Запустити парсер", use_container_width=True):
-            import subprocess, sys
-            result = subprocess.run(
-                [sys.executable, "scraper.py"],
-                cwd=os.path.dirname(__file__),
-                capture_output=True, text=True, encoding="utf-8", errors="replace"
-            )
-            if result.returncode == 0:
-                st.success("Парсер завершив роботу!")
-            else:
-                st.error(f"Помилка: {result.stderr[-500:]}")
-            st.rerun()
+        scraper_path = os.path.join(os.path.dirname(__file__), "scraper.py")
+        if os.path.exists(scraper_path):
+            if st.button("▶ Запустити парсер", use_container_width=True):
+                import subprocess, sys
+                result = subprocess.run(
+                    [sys.executable, "scraper.py"],
+                    cwd=os.path.dirname(__file__),
+                    capture_output=True, text=True, encoding="utf-8", errors="replace"
+                )
+                if result.returncode == 0:
+                    st.success("Парсер завершив роботу!")
+                else:
+                    st.error(f"Помилка: {result.stderr[-500:]}")
+                st.rerun()
+        else:
+            st.caption("ℹ️ Скрипт автоматичного парсингу виконується локально на вашому ПК щопонеділка і передає дані в хмару.")
     else:
         st.info("ℹ️ Дашборд працює в режимі перегляду. Для внесення змін введіть пароль.")
     
