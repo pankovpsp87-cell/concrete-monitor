@@ -72,22 +72,25 @@ def insert_price(company, url, product_name, grade, price, timestamp=None):
             print(f"  [Supabase] ERR inserting price for {company}: {e}")
 
 def get_prices():
+    """Fetch prices from Supabase (cloud) or SQLite (local fallback)."""
     # Fetch from Supabase if client is available
     if supabase_client:
         try:
             response = supabase_client.table("prices").select("*").order("timestamp", desc=True).execute()
             df = pd.DataFrame(response.data)
-            if not df.empty:
-                df['timestamp'] = pd.to_datetime(df['timestamp'])
-                # Convert id column to int
-                df['id'] = df['id'].astype(int)
+            if df.empty:
+                # Return empty DataFrame with expected columns to avoid KeyError downstream
+                return pd.DataFrame(columns=['id','company','url','product_name','grade','price','currency','timestamp'])
+            df['timestamp'] = pd.to_datetime(df['timestamp'], utc=True)
+            df['id'] = df['id'].astype(int)
             return df
         except Exception as e:
             print(f"Failed to fetch from Supabase: {e}. Falling back to SQLite.")
+            # Fall through to SQLite
 
     # SQLite fallback
     if not os.path.exists(DB_NAME):
-        return pd.DataFrame()
+        return pd.DataFrame(columns=['id','company','url','product_name','grade','price','currency','timestamp'])
     conn = get_connection()
     df = pd.read_sql_query("SELECT * FROM prices ORDER BY timestamp DESC", conn)
     conn.close()

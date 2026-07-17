@@ -168,7 +168,6 @@ with st.sidebar:
 
 # ── Основний контент ────────────────────────────────────────────────────────
 st.markdown("# 📊 Моніторинг цін на бетон")
-st.markdown("Івано-Франківськ · Оновлено: " + datetime.datetime.now().strftime("%d.%m.%Y %H:%M"))
 
 df = get_data()
 
@@ -198,10 +197,15 @@ with col3:
     </div>""", unsafe_allow_html=True)
 with col4:
     last_update = df['timestamp'].max()
+    # Normalize to local time removing timezone info for display
+    if hasattr(last_update, 'tzinfo') and last_update.tzinfo is not None:
+        last_update = last_update.tz_localize(None) if hasattr(last_update, 'tz_localize') else last_update.replace(tzinfo=None)
     st.markdown(f"""<div class="metric-card">
         <div class="value">{last_update.strftime('%d.%m')}</div>
         <div class="label">Останнє оновлення</div>
     </div>""", unsafe_allow_html=True)
+
+st.markdown("Івано-Франківськ · Останнє оновлення даних: " + last_update.strftime("%d.%m.%Y %H:%M"))
 
 st.markdown("---")
 
@@ -319,7 +323,7 @@ with tab3:
         st.markdown(f"**Всього записів:** {len(manual_df)}")
         
         display_df = manual_df[['id', 'timestamp', 'company', 'grade', 'price', 'product_name']].copy()
-        display_df['timestamp'] = display_df['timestamp'].dt.strftime('%d.%m.%Y')
+        display_df['timestamp'] = display_df['timestamp'].dt.tz_localize(None).dt.strftime('%d.%m.%Y')
         display_df.columns = ['ID', 'Дата', 'Компанія', 'Марка', 'Ціна (₴)', 'Примітка']
         display_df['Ціна (₴)'] = display_df['Ціна (₴)'].apply(lambda x: f"{x:,.0f}")
         
@@ -357,7 +361,7 @@ with tab4:
         (df['company'].isin(company_filter)) &
         (df['grade'].isin(grade_filter))
     ].copy()
-    show_df['timestamp'] = show_df['timestamp'].dt.strftime('%d.%m.%Y %H:%M')
+    show_df['timestamp'] = show_df['timestamp'].dt.tz_localize(None).dt.strftime('%d.%m.%Y %H:%M')
     show_df['Джерело'] = show_df['url'].apply(
         lambda u: '✏️ Вручну' if u == MANUAL_SOURCE else '🤖 Авто'
     )
