@@ -11,7 +11,7 @@ DB_NAME = os.path.join(os.path.dirname(__file__), "prices.db")
 
 # ── Константи ──────────────────────────────────────────────────────────────
 COMPANIES = [
-    "Beton-X", "Panbeton", "Budservis", "IFCEM",
+    "Бетон Мікс", "Beton-X", "Panbeton", "Budservis", "IFCEM",
     "ZGBK Etalon", "Beton-IF", "Krubeton",
     "Моноліт Буд Інвест", "Титан Бетон Захід"
 ]
