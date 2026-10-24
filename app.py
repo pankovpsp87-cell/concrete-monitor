@@ -13,7 +13,7 @@ DB_NAME = os.path.join(os.path.dirname(__file__), "prices.db")
 COMPANIES = [
     "Бетон Мікс", "Beton-X", "Panbeton", "Budservis", "IFCEM",
     "ZGBK Etalon", "Beton-IF", "Krubeton",
-    "Моноліт Буд Інвест", "Титан Бетон Захід"
+    "Моноліт Буд Інвест", "Титан Бетон Захід", "ВМ Бетон"
 ]
 
 GRADES = [
@@ -164,7 +164,7 @@ with st.sidebar:
     
     st.markdown("---")
     st.caption("📌 Автоматичний збір: Beton-X, ZGBK Etalon, Budservis, Моноліт Буд Інвест")
-    st.caption("📞 Вручну: Panbeton, Krubeton, IFCEM, Beton-IF, Титан Бетон Захід")
+    st.caption("📞 Вручну: Panbeton, Krubeton, IFCEM, Beton-IF, Титан Бетон Захід, ВМ Бетон")
 
 # ── Основний контент ────────────────────────────────────────────────────────
 st.markdown("# 📊 Моніторинг цін на бетон")

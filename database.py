@@ -81,7 +81,7 @@ def get_prices():
             if df.empty:
                 # Return empty DataFrame with expected columns to avoid KeyError downstream
                 return pd.DataFrame(columns=['id','company','url','product_name','grade','price','currency','timestamp'])
-            df['timestamp'] = pd.to_datetime(df['timestamp'], utc=True)
+            df['timestamp'] = pd.to_datetime(df['timestamp'], utc=True, format='mixed')
             df['id'] = df['id'].astype(int)
             return df
         except Exception as e:
@@ -95,7 +95,7 @@ def get_prices():
     df = pd.read_sql_query("SELECT * FROM prices ORDER BY timestamp DESC", conn)
     conn.close()
     if not df.empty:
-        df['timestamp'] = pd.to_datetime(df['timestamp'])
+        df['timestamp'] = pd.to_datetime(df['timestamp'], format='mixed')
     return df
 
 def delete_price(row_id):
